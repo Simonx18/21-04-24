@@ -1,0 +1,18 @@
+.card-container{
+    padding: 10px;
+    background-color: rgb(240, 240, 240);
+}
+
+.card-title{
+    font-size: 18px;
+}
+
+.card-img{
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+}
+
+.card-selected{
+    border: 2px solid red;
+}
