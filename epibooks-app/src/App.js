@@ -1,24 +1,23 @@
-import MyNav from "./components/navbar/MyNav";
-import MyFooter from "./components/footer/MyFooter";
-import AllTheBooks from "./components/allTheBooks/AllTheBooks";
+import React, { useState } from 'react';
+import MyNav from './components/navbar/MyNav';
+import MyFooter from './components/footer/MyFooter';
+import AllTheBooks from './components/allTheBooks/AllTheBooks';
 import AlertWelcome from './components/welcome/Welcome';
 import CommentArea from './components/commentArea/CommentArea';
 import CommentList from './components/commentArea/CommentList';
-import FantasyBook from "./dataBooks/fantasy.json";
-import { useState } from "react";
-import SearchBar from "./components/searchBar/Searchbar";
+import FantasyBook from './dataBooks/fantasy.json';
+import SearchBar from './components/searchBar/Searchbar';
 import SingleComment from './components/singleComment/SingleComment';
 
 function App() {
-  const [books, setBooks] = useState(FantasyBook);
-  const [booksStart, setBooksStart] = useState(FantasyBook);
+  const [searchText, setSearchText] = useState('');
 
   return (
     <>
       <MyNav />
-      <SearchBar allBooks={books} setBooks={setBooks} booksStart={booksStart}/>
+      <SearchBar allBooks={FantasyBook} setBooks={() => {}} booksStart={FantasyBook} setSearchText={setSearchText} />
       <AlertWelcome />
-      <AllTheBooks allBooks={books}/>
+      <AllTheBooks allBooks={FantasyBook} searchText={searchText} setSearchText={setSearchText} />
       <CommentList />
       <CommentArea />
       <MyFooter />
