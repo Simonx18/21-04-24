@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import SingleBook from "../singleCard/SingleBook";
 
-const AllTheBooks = ({ allBooks, searchText, setSearchText }) => {
+const AllTheBooks = ({ allBooks, searchText, setSearchText, setSelectedBook }) => {
   const handleSearchChange = (event) => {
     setSearchText(event.target.value);
   };
@@ -27,6 +27,8 @@ const AllTheBooks = ({ allBooks, searchText, setSearchText }) => {
                 img={book.img}
                 price={book.price}
                 category={book.category}
+                setSelectedBook={setSelectedBook}
+                asin={book.asin}
               />
             </Col>
           ))}

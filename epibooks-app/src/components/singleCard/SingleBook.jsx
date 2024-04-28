@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
+import { Col, Button } from 'react-bootstrap';
 import CommentArea from '../commentArea/CommentArea';
 
-const SingleBook = ({ asin, title, img, price, category }) => {
-  const [selected, setSelected] = useState(false);
-  const [comments, setComments] = useState([]);
+const SingleBook = ({ asin, title, img, price, category, setSelectedBook }) => {
+  const [selected, setSelectedState] = useState(false);
 
-  const selectedBooks = async () => {
-    setSelected(!selected);
-    if (!selected) {
-    }
+  const handleClick = () => {
+    setSelectedState(!selected);
+    setSelectedBook(asin);
   };
 
   return (
-    <div className={selected ? 'card-selected' : ''}>
-      <div className="card-container my-3">
-        <h2 className="card-title py-2 text-truncate">{title}</h2>
-        <img className="card-img" src={img} alt={title} />
-        <p>Price: {price}€</p>
-        <p>Category: {category}</p>
-        <button onClick={selectedBooks} className="btn btn-primary">
-          {selected ? 'Hide Comments' : 'Show Comments'}
-        </button>
+    <Col xs={12} md={4} lg={3}>
+      <div className={selected ? 'card-selected' : ''}>
+        <div className="card-container my-3">
+          <h2 className="card-title py-2 text-truncate">{title}</h2>
+          <img className="card-img" src={img} alt={title} />
+          <p>Price: {price}€</p>
+          <p>Category: {category}</p>
+          <Button onClick={handleClick} className="btn btn-primary">
+            {selected ? 'Hide Comments' : 'Show Comments'}
+          </Button>
+        </div>
+        {selected && <CommentArea bookId={asin} />}
       </div>
-      {selected && <CommentArea comments={comments} />}
-    </div>
+    </Col>
   );
 };
 
