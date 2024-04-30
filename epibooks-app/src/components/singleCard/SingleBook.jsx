@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Col, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import CommentArea from '../commentArea/CommentArea';
 
 const SingleBook = ({ asin, title, img, price, category, setSelectedBook }) => {
@@ -21,6 +22,7 @@ const SingleBook = ({ asin, title, img, price, category, setSelectedBook }) => {
           <Button onClick={handleClick} className="btn btn-primary">
             {selected ? 'Hide Comments' : 'Show Comments'}
           </Button>
+          <Link to={`/book/${asin}`} className="btn btn-secondary">View Details</Link>
         </div>
         {selected && <CommentArea bookId={asin} />}
       </div>
