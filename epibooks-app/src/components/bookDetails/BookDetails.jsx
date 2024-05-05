@@ -1,29 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { Card, Col, Row } from 'react-bootstrap';
+import CommentArea from '../commentArea/CommentArea';
 
 const BookDetails = () => {
   const { asin } = useParams();
   const [book, setBook] = useState(null);
-  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
       try {
-        const bookResponse = await fetch(`https://striveschool-api.herokuapp.com/api/books/${asin}`);
-        if (!bookResponse.ok) {
+        const response = await fetch(`https://striveschool-api.herokuapp.com/api/books/${asin}`);
+        if (!response.ok) {
           throw new Error('Errore nel recupero dei dettagli del libro');
         }
-        const bookData = await bookResponse.json();
-        setBook(bookData);
-
-        const commentsResponse = await fetch(`https://striveschool-api.herokuapp.com/api/books/${asin}/comments`);
-        if (!commentsResponse.ok) {
-          throw new Error('Errore nel recupero delle recensioni del libro');
-        }
-        const commentsData = await commentsResponse.json();
-        setComments(commentsData);
+        const data = await response.json();
+        setBook(data);
       } catch (error) {
-        console.error('Errore nel recupero dei dettagli del libro e delle recensioni:', error);
+        console.error('Errore nel recupero dei dettagli del libro:', error);
       }
     };
 
@@ -35,23 +29,19 @@ const BookDetails = () => {
   }
 
   return (
-    <div>
-      <h2>Dettagli del libro</h2>
-      <p>Titolo: {book.title}</p>
-      <p>Autore: {book.author}</p>
-      <p>Prezzo: {book.price}</p>
-      <p>Categoria: {book.category}</p>
-      <h3>Recensioni</h3>
-      <ul>
-        {comments.map(comment => (
-          <li key={comment._id}>
-            <p>Autore: {comment.author}</p>
-            <p>Recensione: {comment.comment}</p>
-            <p>Valutazione: {comment.rate}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Row className="justify-content-center">
+      <Col md={8}>
+        <Card>
+          <Card.Img variant="top" src={book.img} />
+          <Card.Body>
+            <Card.Title style={{ color: 'black' }}>
+              {book.title}
+            </Card.Title>
+          </Card.Body>
+        </Card>
+        <CommentArea asin={asin} />
+      </Col>
+    </Row>
   );
 };
 

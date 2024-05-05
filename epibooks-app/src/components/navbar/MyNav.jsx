@@ -1,11 +1,9 @@
 import React from 'react';
-import Navbar from 'react-bootstrap/Navbar';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
+import { Navbar, Container, Nav, Form } from 'react-bootstrap';
 
-const MyNav = ({ searchText, setSearchText }) => {
+const MyNav = ({ searchQuery, setSearchQuery }) => { 
   const handleSearchChange = (event) => {
-    setSearchText(event.target.value);
+    setSearchQuery(event.target.value);
   };
 
   return (
@@ -19,14 +17,14 @@ const MyNav = ({ searchText, setSearchText }) => {
             <Nav.Link href="#">About</Nav.Link>
             <Nav.Link href="#">Browse</Nav.Link>
           </Nav>
-          <Nav>
-            <input
+          <Form className="d-flex">
+            <Form.Control
               type="text"
               placeholder="Search by title"
-              value={searchText}
+              value={searchQuery}
               onChange={handleSearchChange}
             />
-          </Nav>
+          </Form>
         </Navbar.Collapse>
       </Container>
     </Navbar>

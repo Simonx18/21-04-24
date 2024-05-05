@@ -1,32 +1,31 @@
-import React, { useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MyNav from './components/navbar/MyNav';
-import MyFooter from './components/footer/MyFooter';
-import AllTheBooks from './components/allTheBooks/AllTheBooks';
-import AlertWelcome from './components/welcome/Welcome';
-import CommentArea from './components/commentArea/CommentArea';
-import SearchBar from './components/searchBar/Searchbar';
-import FantasyBook from './dataBooks/fantasy.json';
-import NotFound from './components/notFound/NotFound';
-import BookDetails from './components/bookDetails/BookDetails';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './App.css'
+import MyNav from './components/navbar/MyNav'
+import MyFooter from './components/footer/MyFooter'
+import Welcome from './components/welcome/Welcome'
+import AllTheBooks from './components/allTheBooks/AllTheBooks'
+import { Container } from 'react-bootstrap'
+import { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import NotFound from './components/notFound/NotFound'
+import BookDetails from './components/bookDetails/BookDetails'
 
 function App() {
-  const [searchText, setSearchText] = useState('');
-  const [selectedBook, setSelectedBook] = useState(null);
-
+  const [searchQuery, setSearchQuery] = useState('')
   return (
     <BrowserRouter>
-      <MyNav />
-      <SearchBar allBooks={FantasyBook} setSearchText={setSearchText} />
-      <AlertWelcome />
-      <Routes>
-        <Route path="/" element={<AllTheBooks allBooks={FantasyBook} searchText={searchText} setSearchText={setSearchText} setSelectedBook={setSelectedBook} />} />
-        <Route path="/book/:asin" element={<CommentArea />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <MyNav searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <Container>
+        <Welcome />
+        <Routes>
+          <Route path="/" element={<AllTheBooks searchQuery={searchQuery} />} />
+          <Route path="/details/:asin" element={<BookDetails />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Container>
       <MyFooter />
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App

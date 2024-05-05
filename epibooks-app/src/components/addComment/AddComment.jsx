@@ -1,89 +1,74 @@
 import React, { useState } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
-import SingleComment from '../singleComment/SingleComment';
+import { Button, Form, Alert } from 'react-bootstrap';
 
-const AddComment = ({ bookId, addComment }) => {
-  const [comment, setComment] = useState('');
-  const [rate, setRate] = useState('');
+const AddComment = ({ asin }) => {
+  const [comment, setComment] = useState({ comment: '', rate: 1 });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [comments, setComments] = useState([]);
 
-  const handleSubmit = async (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setComment({ ...comment, [name]: value });
+  };
+
+  const sendComment = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(false);
 
-    if (!comment.trim() || isNaN(rate) || rate < 1 || rate > 5) {
-      setError('Il testo della recensione non può essere vuoto e la valutazione deve essere un numero compreso tra 1 e 5');
-      return;
-    }
-
     try {
-      const response = await fetch('https://striveschool-api.herokuapp.com/api/${bookId}/comments', {
+      const response = await fetch('https://striveschool-api.herokuapp.com/api/comments', {
         method: 'POST',
+        body: JSON.stringify({ ...comment, elementId: asin }),
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjAzMzc4ZGU2MDQ3YjAwMTlmYTYwMmIiLCJpYXQiOjE3MTM3MDk3ODEsImV4cCI6MTcxNDkxOTM4MX0.IhNfULwwFgKo7Kh42AJRoHTTaUC0Ft4OOTsWdIB3PZY',
+          'Content-type': 'application/json',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjAzMzc4ZGU2MDQ3YjAwMTlmYTYwMmIiLCJpYXQiOjE3MTM3MTYxNTUsImV4cCI6MTcxNDkyNTc1NX0.WcZLcopHABvidVu2lpBabaaonMJpULTmyKO_k20OHBQ',
         },
-        body: JSON.stringify({
-          comment: comment,
-          rate: rate,
-          elementId: bookId,
-        }),
       });
 
       if (!response.ok) {
-        throw new Error('Errore durante l\'invio della recensione');
+        throw new Error('Errore');
       }
 
       setSuccess(true);
-      addComment();
-      setComment('');
-      setRate('');
-      getComments();
+      setComment({ comment: '', rate: 1 });
     } catch (error) {
-      console.error('Errore durante l\'invio della recensione:', error);
-      setError('Si è verificato un errore durante l\'invio della recensione');
-    }
-  };
-
-  const getComments = async () => {
-    try {
-      const response = await fetch(`https://striveschool-api.herokuapp.com/api/books/${bookId}/comments/`);
-      if (!response.ok) {
-        throw new Error('Errore nel recupero dei commenti');
-      }
-      const data = await response.json();
-      setComments(data);
-    } catch (error) {
-      console.error('Errore nel recupero dei commenti:', error);
-      setError('Si è verificato un errore nel recupero dei commenti');
+      setError(error.message);
     }
   };
 
   return (
-    <div>
-      <h3>Aggiungi Recensione</h3>
+    <div className="my-3">
+      <Form onSubmit={sendComment}>
+        <Form.Group className="mb-2">
+          <Form.Label>Recensione</Form.Label>
+          <Form.Control
+            type="text"
+            name="comment"
+            placeholder="Inserisci qui il testo"
+            value={comment.comment}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group className="mb-2">
+          <Form.Label>Valutazione</Form.Label>
+          <Form.Control
+            as="select"
+            name="rate"
+            value={comment.rate}
+            onChange={handleChange}
+          >
+            {[1, 2, 3, 4, 5].map((value) => (
+              <option key={value}>{value}</option>
+            ))}
+          </Form.Control>
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Invia
+        </Button>
+      </Form>
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">Recensione inviata con successo!</Alert>}
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="comment">
-          <Form.Label>Testo Recensione:</Form.Label>
-          <Form.Control type="text" value={comment} onChange={(e) => setComment(e.target.value)} />
-        </Form.Group>
-        <Form.Group controlId="rate">
-          <Form.Label>Valutazione (da 1 a 5):</Form.Label>
-          <Form.Control type="number" min="1" max="5" value={rate} onChange={(e) => setRate(e.target.value)} />
-        </Form.Group>
-        <Button variant="primary" type="submit">Invia Recensione</Button>
-      </Form>
-      <div>
-        <h3>Commenti</h3>
-        {comments.map((comment, index) => (
-          <SingleComment key={index} review={comment} />
-        ))}
-      </div>
     </div>
   );
 };
